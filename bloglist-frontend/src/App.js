@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import './App.css'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notification'
+import BlogForm from './components/BlogForm'
+import Togglable from './components/Togglable'
 
 
 const App = () => {
@@ -16,6 +18,7 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [alertMessage, setAlertMessage] = useState(null)
   const [isAlert, setAlert] = useState(false)
+  const blogFormRef = useRef()
 
   useEffect(() => {
     blogService
@@ -37,6 +40,7 @@ const App = () => {
 
   const addBlog = async (event) => {
     event.preventDefault()
+    blogFormRef.current.toggleVisibility()
     const blogObject = {
       title: title,
       author: author,
@@ -133,6 +137,7 @@ const App = () => {
     </form>
   )
   
+  /*
     const blogForm = () => (
       <form onSubmit = {addBlog}>
         <div>
@@ -164,7 +169,7 @@ const App = () => {
         <button type = 'submit'>Create</button>
       </form>
     )
-  
+*/  
 
   if (user === null && isAlert === false) {
     return (
@@ -195,10 +200,17 @@ const App = () => {
       <p>{user.name} logged in</p>
       <button onClick={handleLogout}>logout</button>
       
-      <h2>Create new</h2>
-      <div>
-        {blogForm()}
-      </div>
+      <Togglable buttonLabel = 'crate new blog' ref = {blogFormRef}>
+        <BlogForm 
+          title = {title}
+          author = {author}
+          url = {url}
+          handleTitleChange = {({ target}) => setNewTitle(target.value)}
+          handleAuthorChange = {({ target }) => setNewAuthor(target.value)}
+          handleUrlChange = {({ target }) => setNewUrl(target.value)}
+          addBlog = {addBlog}
+          />
+      </Togglable>
 
       <ul>
         {blogs.map(blog =>
