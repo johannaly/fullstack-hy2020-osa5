@@ -10,9 +10,6 @@ import Togglable from './components/Togglable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [title, setNewTitle] = useState('')
-  const [author, setNewAuthor] = useState('')
-  const [url, setNewUrl] = useState('')
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
@@ -37,28 +34,6 @@ const App = () => {
     }
   }, [])
 
-
-  const addBlog = async (event) => {
-    event.preventDefault()
-    blogFormRef.current.toggleVisibility()
-    const blogObject = {
-      title: title,
-      author: author,
-      url: url
-    }
-    const returnedBlog = await blogService.create(blogObject)
-      setBlogs(blogs.concat(returnedBlog))
-      setAlertMessage(`a new blog ${title} by ${author} added`)
-      setAlert(false)
-      setTimeout(() => {
-        setAlertMessage(null)
-      }, 5000)
-
-      setNewTitle('')
-      setNewAuthor('')
-      setNewUrl('') 
-    }
-  
   
 
   const handleLogin = async (event) => {
@@ -80,11 +55,13 @@ const App = () => {
         setUsername('')
         setPassword('')
         setAlertMessage(`${username} logged in`)
-        setAlert(false)
+        setTimeout(() => {
+          setAlertMessage(null)
+          setAlert(false)
+        }, 5000)
+        
       } else {
-        
-        console.log("else: " + user)
-        
+        //console.log("else: " + user)
         setUsername('')
         setPassword('')
         setAlertMessage('wrong username or password')
@@ -136,40 +113,18 @@ const App = () => {
       <button type='submit'>login</button>
     </form>
   )
-  
-  /*
-    const blogForm = () => (
-      <form onSubmit = {addBlog}>
-        <div>
-          <div>
-          Title:
-          <input type = "title"
-              value = {title}
-              name = "title"
-              onChange = {({ target }) => setNewTitle(target.value)}
-          />
-          </div>
-          <div>
-          Author:
-            <input type = "author"
-              value = {author}
-              name = "author"
-              onChange = {({ target }) => setNewAuthor(target.value)}
-          />
-          </div>
-          <div>
-          Url:
-            <input type = "text"
-              value = {url}
-              name = "url"
-              onChange = {({ target }) => setNewUrl(target.value)}
-          />
-          </div>
-        </div>
-        <button type = 'submit'>Create</button>
-      </form>
-    )
-*/  
+
+  const addBlog = async (blogObject) => {
+    blogFormRef.current.toggleVisibility()
+    const returnedBlog = await blogService.create(blogObject)
+      setBlogs(blogs.concat(returnedBlog))
+      setAlertMessage(`a new blog ${returnedBlog.title} by ${returnedBlog.author} added`)
+      setAlert(false)
+      setTimeout(() => {
+        setAlertMessage(null)
+      }, 5000)
+  }
+
 
   if (user === null && isAlert === false) {
     return (
@@ -200,18 +155,13 @@ const App = () => {
       <p>{user.name} logged in</p>
       <button onClick={handleLogout}>logout</button>
       
-      <Togglable buttonLabel = 'crate new blog' ref = {blogFormRef}>
-        <BlogForm 
-          title = {title}
-          author = {author}
-          url = {url}
-          handleTitleChange = {({ target}) => setNewTitle(target.value)}
-          handleAuthorChange = {({ target }) => setNewAuthor(target.value)}
-          handleUrlChange = {({ target }) => setNewUrl(target.value)}
-          addBlog = {addBlog}
+      
+      <Togglable buttonLabel = 'create new blog' ref = {blogFormRef}>
+        <BlogForm
+          createBlog = {addBlog}
           />
       </Togglable>
-
+    
       <ul>
         {blogs.map(blog =>
           <Blog
