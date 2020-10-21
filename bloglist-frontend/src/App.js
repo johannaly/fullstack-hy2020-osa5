@@ -125,6 +125,11 @@ const App = () => {
       }, 5000)
   }
 
+  const addLike = async (blogToModify) => {
+    const returnedBlog = await blogService.modifyBlog(blogToModify)
+    const updatedBlogs = await blogService.getAll()
+    setBlogs(updatedBlogs)
+}
 
   if (user === null && isAlert === false) {
     return (
@@ -165,15 +170,14 @@ const App = () => {
       <ul>
         {blogs.map(blog =>
           <Blog
-            key={blog.id}
-            blog={blog}
+            key = {blog.id}
+            blog = {blog}
+            addLike = {addLike}
           />
         )}
       </ul>
     </div>
   )
-
-
 }
 
 

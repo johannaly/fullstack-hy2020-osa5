@@ -1,11 +1,6 @@
 import React, { useState } from 'react'
 
-
-
-
-
-
-const Blog = ({ blog }) => {
+const Blog = ({ blog, addLike }) => {
   const [visible, setVisible] = useState(false)
   const [buttonText, setButtonText] = useState('view')
 
@@ -19,16 +14,27 @@ const Blog = ({ blog }) => {
   const buttonStyle = {
     marginRight: 5
   }
+
   const toggleVisible = (event) => {
     if(visible === false) {
       setButtonText('hide')
       setVisible(true)
-      console.log('tässä')
     } else {
       setButtonText('view')
       setVisible(false)
     }
   }
+
+  const handleLike = () => {
+    addLike({
+      title: blog.title,
+      id: blog.id,
+      likes: blog.likes + 1,
+      author: blog.author,
+      url: blog.url 
+    })
+  }
+  
 
 if(visible === false) {
   return (
@@ -53,7 +59,7 @@ return (
         <p>{blog.url}</p>
         <p>
           {blog.likes}
-          <button style= {buttonStyle}>like</button>
+          <button style= {buttonStyle} onClick= {handleLike}>like</button>
         </p>
       </div>
     </div>
