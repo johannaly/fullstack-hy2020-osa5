@@ -131,6 +131,11 @@ const App = () => {
     setBlogs(updatedBlogs)
 }
 
+ 
+  
+  
+  
+
   if (user === null && isAlert === false) {
     return (
       <div>
@@ -168,7 +173,9 @@ const App = () => {
       </Togglable>
     
       <ul>
-        {blogs.map(blog =>
+        {blogs
+        .sort((a, b) => b.likes > a.likes ? 1 : -1)
+        .map(blog =>
           <Blog
             key = {blog.id}
             blog = {blog}
