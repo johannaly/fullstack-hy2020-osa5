@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
 
-const Blog = ({ blog, addLike }) => {
+const Blog = ({ blog, addLike, deleteBlog, user }) => {
   const [visible, setVisible] = useState(false)
   const [buttonText, setButtonText] = useState('view')
-
+  
+  
   const blogStyle = {
     paddingTop:10,
     paddingLeft: 2,
@@ -13,6 +14,10 @@ const Blog = ({ blog, addLike }) => {
   }
   const buttonStyle = {
     marginRight: 5
+  }
+
+  const blueButtonStyle = {
+    backgroundColor: 'lightblue'
   }
 
   const toggleVisible = (event) => {
@@ -25,6 +30,7 @@ const Blog = ({ blog, addLike }) => {
     }
   }
 
+  
   const handleLike = () => {
     addLike({
       title: blog.title,
@@ -35,6 +41,15 @@ const Blog = ({ blog, addLike }) => {
     })
   }
   
+  const handleDelete = () => {
+    console.log(blog.id)
+    const result = window.confirm(`Remove ${blog.title} by ${blog.author}`)
+    if(result) {
+    deleteBlog(
+       blog.id
+    )
+    }
+  }
 
 if(visible === false) {
   return (
@@ -48,7 +63,7 @@ if(visible === false) {
      </div>  
   )}
 
-
+//console.log(user)
 return (
     <div style = {blogStyle}>
       <div>
@@ -61,6 +76,13 @@ return (
           {blog.likes}
           <button style= {buttonStyle} onClick= {handleLike}>like</button>
         </p>
+        {blog.user.id === user.id &&
+          <p>
+          <button style = {blueButtonStyle} onClick={handleDelete}>remove</button>
+          </p>
+        }
+        
+  
       </div>
     </div>
   )

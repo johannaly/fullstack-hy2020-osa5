@@ -131,11 +131,12 @@ const App = () => {
     setBlogs(updatedBlogs)
 }
 
- 
+  const deleteBlog = async (id) => {
+    const response = await blogService.deleteBlog(id)
+    const updatedBlogs = await blogService.getAll()
+    setBlogs(updatedBlogs)
+  }
   
-  
-  
-
   if (user === null && isAlert === false) {
     return (
       <div>
@@ -180,6 +181,8 @@ const App = () => {
             key = {blog.id}
             blog = {blog}
             addLike = {addLike}
+            user = {user}
+            deleteBlog = {deleteBlog}
           />
         )}
       </ul>
