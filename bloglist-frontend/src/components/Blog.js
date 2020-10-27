@@ -3,8 +3,8 @@ import React, { useState } from 'react'
 const Blog = ({ blog, addLike, deleteBlog, user }) => {
   const [visible, setVisible] = useState(false)
   const [buttonText, setButtonText] = useState('view')
-  
-  
+
+
   const blogStyle = {
     paddingTop:10,
     paddingLeft: 2,
@@ -20,6 +20,7 @@ const Blog = ({ blog, addLike, deleteBlog, user }) => {
     backgroundColor: 'lightblue'
   }
 
+  // eslint-disable-next-line no-unused-vars
   const toggleVisible = (event) => {
     if(visible === false) {
       setButtonText('hide')
@@ -30,47 +31,49 @@ const Blog = ({ blog, addLike, deleteBlog, user }) => {
     }
   }
 
-  
+
   const handleLike = () => {
     addLike({
       title: blog.title,
       id: blog.id,
       likes: blog.likes + 1,
       author: blog.author,
-      url: blog.url 
+      url: blog.url
     })
   }
-  
+
   const handleDelete = () => {
-    console.log(blog.id)
     const result = window.confirm(`Remove ${blog.title} by ${blog.author}`)
     if(result) {
-    deleteBlog(
-       blog.id
-    )
+      deleteBlog(
+        blog.id
+      )
     }
   }
 
-if(visible === false) {
+
+  if(visible === false) {
+    return (
+      <div style = {blogStyle}>
+        <div>
+          <p>
+            {blog.title} {blog.author}
+            <button style = {buttonStyle} onClick= {toggleVisible}>{buttonText}</button>
+          </p>
+        </div>
+      </div>
+    )}
+
+
+
+  //console.log(user)
   return (
     <div style = {blogStyle}>
       <div>
         <p>
           {blog.title} {blog.author}
           <button style = {buttonStyle} onClick= {toggleVisible}>{buttonText}</button>
-        </p> 
-       </div>
-     </div>  
-  )}
-
-//console.log(user)
-return (
-    <div style = {blogStyle}>
-      <div>
-        <p>
-          {blog.title} {blog.author}
-          <button style = {buttonStyle} onClick= {toggleVisible}>{buttonText}</button>
-        </p> 
+        </p>
         <p>{blog.url}</p>
         <p>
           {blog.likes}
@@ -78,11 +81,11 @@ return (
         </p>
         {blog.user.id === user.id &&
           <p>
-          <button style = {blueButtonStyle} onClick={handleDelete}>remove</button>
+            <button style = {blueButtonStyle} onClick={handleDelete}>remove</button>
           </p>
         }
-        
-  
+
+
       </div>
     </div>
   )

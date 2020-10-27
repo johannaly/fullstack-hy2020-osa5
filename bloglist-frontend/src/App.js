@@ -7,7 +7,6 @@ import Notification from './components/Notification'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
 
-
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
@@ -34,8 +33,6 @@ const App = () => {
     }
   }, [])
 
-  
-
   const handleLogin = async (event) => {
     event.preventDefault()
     //console.log('logging in with', username, password)
@@ -44,7 +41,7 @@ const App = () => {
         username, password
       })
       setUser(user)
-      
+
       if(user !== null) {
         console.log(user)
         window.localStorage.setItem(
@@ -59,7 +56,7 @@ const App = () => {
           setAlertMessage(null)
           setAlert(false)
         }, 5000)
-        
+
       } else {
         //console.log("else: " + user)
         setUsername('')
@@ -67,7 +64,7 @@ const App = () => {
         setAlertMessage('wrong username or password')
         setAlert(true)
         window.localStorage.clear()
-        
+
         setTimeout(() => {
           setAlertMessage(null)
           setAlert(false)
@@ -76,8 +73,8 @@ const App = () => {
 
     } catch (exception) {
       console.log('exception caught: ' + exception)
-      setAlertMessage("wrong credentials")
-      setAlert(true)  
+      setAlertMessage('wrong credentials')
+      setAlert(true)
       setTimeout(() => {
         setAlertMessage(null)
         setAlert(false)
@@ -85,6 +82,7 @@ const App = () => {
     }
   }
 
+  // eslint-disable-next-line no-unused-vars
   const handleLogout = async (event) => {
     window.localStorage.clear()
     setUser(null)
@@ -94,7 +92,7 @@ const App = () => {
     <form onSubmit={handleLogin}>
       <div>
         username
-          <input
+        <input
           type="text"
           value={username}
           name="Username"
@@ -103,7 +101,7 @@ const App = () => {
       </div>
       <div>
         password
-          <input
+        <input
           type="password"
           value={password}
           name="Password"
@@ -117,26 +115,26 @@ const App = () => {
   const addBlog = async (blogObject) => {
     blogFormRef.current.toggleVisibility()
     const returnedBlog = await blogService.create(blogObject)
-      setBlogs(blogs.concat(returnedBlog))
-      setAlertMessage(`a new blog ${returnedBlog.title} by ${returnedBlog.author} added`)
-      setAlert(false)
-      setTimeout(() => {
-        setAlertMessage(null)
-      }, 5000)
+    setBlogs(blogs.concat(returnedBlog))
+    setAlertMessage(`a new blog ${returnedBlog.title} by ${returnedBlog.author} added`)
+    setAlert(false)
+    setTimeout(() => {
+      setAlertMessage(null)
+    }, 5000)
   }
 
   const addLike = async (blogToModify) => {
-    const returnedBlog = await blogService.modifyBlog(blogToModify)
-    const updatedBlogs = await blogService.getAll()
-    setBlogs(updatedBlogs)
-}
-
-  const deleteBlog = async (id) => {
-    const response = await blogService.deleteBlog(id)
+    await blogService.modifyBlog(blogToModify)
     const updatedBlogs = await blogService.getAll()
     setBlogs(updatedBlogs)
   }
-  
+
+  const deleteBlog = async (id) => {
+    await blogService.deleteBlog(id)
+    const updatedBlogs = await blogService.getAll()
+    setBlogs(updatedBlogs)
+  }
+
   if (user === null && isAlert === false) {
     return (
       <div>
@@ -148,8 +146,8 @@ const App = () => {
       </div>
     )
   } else if (user === null && isAlert === true) {
-      return (
-        <div>
+    return (
+      <div>
         <h2>Blogs</h2>
         <Notification message = {alertMessage} isAlert = {isAlert}/>
         <h2>Log in to application</h2>
@@ -157,7 +155,7 @@ const App = () => {
           {loginForm()}
         </div>
       </div>
-      )
+    )
   }
   return (
     <div>
@@ -165,26 +163,25 @@ const App = () => {
       <Notification message = {alertMessage} isAlert = {isAlert}/>
       <p>{user.name} logged in</p>
       <button onClick={handleLogout}>logout</button>
-      
-      
+
       <Togglable buttonLabel = 'create new blog' ref = {blogFormRef}>
         <BlogForm
           createBlog = {addBlog}
-          />
+        />
       </Togglable>
-    
+
       <ul>
         {blogs
-        .sort((a, b) => b.likes > a.likes ? 1 : -1)
-        .map(blog =>
-          <Blog
-            key = {blog.id}
-            blog = {blog}
-            addLike = {addLike}
-            user = {user}
-            deleteBlog = {deleteBlog}
-          />
-        )}
+          .sort((a, b) => b.likes > a.likes ? 1 : -1)
+          .map(blog =>
+            <Blog
+              key = {blog.id}
+              blog = {blog}
+              addLike = {addLike}
+              user = {user}
+              deleteBlog = {deleteBlog}
+            />
+          )}
       </ul>
     </div>
   )
