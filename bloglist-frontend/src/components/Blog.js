@@ -64,9 +64,7 @@ const Blog = ({ blog, addLike, deleteBlog, user }) => {
       </div>
     )}
 
-
-
-  //console.log(user)
+  
   return (
     <div style = {blogStyle}>
       <div>
