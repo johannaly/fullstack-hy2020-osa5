@@ -58,11 +58,14 @@ test('renders also url and likes after button has been pressed', async () => {
     const component = render(
         <Blog blog={blog} user={user} toggleVisible={mockHandler} />
     )
-    component.debug()
+   
+   // component.debug()
 
     const button = component.getByText('view')
     fireEvent.click(button)
     
+    expect(button).toHaveTextContent('hide')
+
     const elementUrl = component.getByText(
         'www.software.com'
     )
@@ -98,9 +101,12 @@ test('if like-button is pressed twice, the func is also called twice', async () 
     const component = render(
         <Blog blog={blog} user = {user} addLike={mockHandler} toggleVisible={mockHandler} />
     )
-
+ 
+    //tätä nappia voidaan painaa, mutta se ei muuta mockHandlerin
+    //laskuria, koska sen avulla kutsutaan Blog-komponentin sisäistä funktiota.
     const buttonView = component.getByText('view')
     fireEvent.click(buttonView)
+    expect(buttonView).toHaveTextContent('hide')
 
     const buttonLike = component.getByText('like')
     fireEvent.click(buttonLike)
