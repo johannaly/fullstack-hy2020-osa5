@@ -37,7 +37,7 @@ describe('Blog app', function () {
         })
     })
 
-    describe.only('When logged in', function() {
+    describe('When logged in', function() {
         beforeEach(function() {
             cy.get('#username').type('lyyt')
             cy.get('#password').type('salainen')
@@ -52,5 +52,18 @@ describe('Blog app', function () {
             cy.contains('new blog Johanna L.')
 
         })
+        it('Like can be added to the blog', function() {
+            cy.contains('create new blog').click()
+            cy.get('#title').type('new blog')
+            cy.get('#author').type('Johanna L.')
+            cy.get('#url').type('www.all.fi')
+            cy.get('#createNew-button').click()
+            cy.contains('new blog Johanna L.')
+            cy.contains('view').click()
+            cy.contains('like').click()
+            cy.contains('1')
+
+        })
     })
+
 })
