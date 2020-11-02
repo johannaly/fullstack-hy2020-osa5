@@ -1,3 +1,5 @@
+const { func } = require("prop-types")
+
 describe('Blog app', function () {
     beforeEach(function () {
         cy.request('POST', 'http://localhost:3001/api/testing/reset')
@@ -32,6 +34,23 @@ describe('Blog app', function () {
                 .should('contain', 'wrong username or password')
                 .and('have.css', 'color', 'rgb(255, 0, 0)')
                 .and('have.css', 'border-style', 'solid')
+        })
+    })
+
+    describe.only('When logged in', function() {
+        beforeEach(function() {
+            cy.get('#username').type('lyyt')
+            cy.get('#password').type('salainen')
+            cy.get('#login-button').click()
+        })
+        it('A blog can be created', function() {
+            cy.contains('create new blog').click()
+            cy.get('#title').type('new blog')
+            cy.get('#author').type('Johanna L.')
+            cy.get('#url').type('www.all.fi')
+            cy.get('#createNew-button').click()
+            cy.contains('new blog Johanna L.')
+
         })
     })
 })
