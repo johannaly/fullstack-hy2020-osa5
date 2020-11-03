@@ -46,9 +46,7 @@ describe('Blog app', function () {
 
     describe('When logged in', function() {
         beforeEach(function() {
-            cy.get('#username').type('lyyt')
-            cy.get('#password').type('salainen')
-            cy.get('#login-button').click()
+            cy.login({ username: 'lyyt', password: 'salainen' })
         })
         it('A blog can be created', function() {
             cy.contains('create new blog').click()
@@ -59,48 +57,62 @@ describe('Blog app', function () {
             cy.contains('new blog Johanna L.')
             cy.contains('view').click()
         })
+        describe('and a blog exists', function() {
+            beforeEach(function() {
+                cy.createBlog({
+                    title: 'new blog',
+                    author: 'Johanna L',
+                    url: 'www.all.fi'
+                })
+            })
+  
         it('Like can be added to the blog', function() {
-            cy.contains('create new blog').click()
-            cy.get('#title').type('new blog')
-            cy.get('#author').type('Johanna L.')
-            cy.get('#url').type('www.all.fi')
-            cy.get('#createNew-button').click()
-            cy.contains('new blog Johanna L.')
             cy.contains('view').click()
             cy.contains('like').click()
-            cy.contains('1')
+            cy.get('#blogs').get('.likes').should('contain','1')
         })
-        it.only('Blog can be removed by the user who has added it', function() {
-            cy.contains('create new blog').click()
-            cy.get('#title').type('new blog')
-            cy.get('#author').type('Johanna L.')
-            cy.get('#url').type('www.all.fi')
-            cy.get('#createNew-button').click()
-            cy.contains('new blog Johanna L.')
+        it('Blog can be removed by the user who has added it', function() {
             cy.contains('view').click()
             cy.contains('remove').click()
-            cy.get('.blogTitleAndAuthor').should('not.contain', 'new blog Johanna L.')
+            cy.get('').should('not.contain', 'new blog Johanna L')
+        })
+        it('blogs are organized based to the amount of likes', function() {
+            cy.get('html').should('contain', 'new blog Johanna L')
+            
+            cy.createBlog({
+                title: 'something',
+                author: 'Johanna L',
+                url: 'www.some.fi'
+            })
+
+            cy.contains('something Johanna L')
+
+            cy.get('html')
+                .contains('something')
+                .contains('view').click()
+            cy.contains('like').click()
+
+            cy.get('#blogs')
+            cy.contains('view').click()
+            cy.get('.blog:first').get('.likes:first').should('contain', '1')
+            cy.get('.blog:last').get('.likes:last').should('contain', '0')
         })
     })        
-
+}) 
     describe('different user logged in', function() {
         it('Only the blog author can remove the blog', function() {
-            cy.get('#username').type('lyyt')
-            cy.get('#password').type('salainen')
-            cy.get('#login-button').click()
-            cy.contains('create new blog').click()
-            cy.get('#title').type('new blog')
-            cy.get('#author').type('Johanna L.')
-            cy.get('#url').type('www.all.fi')
-            cy.get('#createNew-button').click()
-            cy.contains('new blog Johanna L.')
+            cy.login({ username: 'lyyt', password: 'salainen' })
+            cy.createBlog({
+                title: 'new blog',
+                author: 'Johanna L',
+                url: 'www.all.fi'
+            })
+            cy.contains('new blog Johanna L')
             cy.get('#logout-button').click()
-            cy.get('#username').type('Jussi')
-            cy.get('#password').type('jänö')
-            cy.get('#login-button').click()
-            cy.contains('view').click()
-            cy.get('.blog').should('not.contain', 'remove')
             
+            cy.login({ username: 'Jussi', password: 'jänö' })
+            cy.contains('view').click()
+            cy.get('html').should('not.contain', 'remove')
         })    
     })
 })
