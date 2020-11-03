@@ -64,7 +64,7 @@ const Blog = ({ blog, addLike, deleteBlog, user }) => {
       </div>
     )}
 
-  
+
   return (
     <div style = {blogStyle} className='blog'>
       <div>
