@@ -43,7 +43,7 @@ const App = () => {
       setUser(user)
 
       if(user !== null) {
-        console.log(user)
+        //console.log(user)
         window.localStorage.setItem(
           'loggedBlogappUser', JSON.stringify(user)
         )
@@ -117,7 +117,8 @@ const App = () => {
   const addBlog = async (blogObject) => {
     blogFormRef.current.toggleVisibility()
     const returnedBlog = await blogService.create(blogObject)
-    setBlogs(blogs.concat(returnedBlog))
+    const updatedBlogs = await blogService.getAll()
+    setBlogs(updatedBlogs)
     setAlertMessage(`a new blog ${returnedBlog.title} by ${returnedBlog.author} added`)
     setAlert(false)
     setTimeout(() => {
@@ -164,7 +165,7 @@ const App = () => {
       <h2>Blogs</h2>
       <Notification message = {alertMessage} isAlert = {isAlert}/>
       <p>{user.name} logged in</p>
-      <button onClick={handleLogout}>logout</button>
+      <button id='logout-button' onClick={handleLogout}>logout</button>
 
       <Togglable buttonLabel = 'create new blog' ref = {blogFormRef}>
         <BlogForm
